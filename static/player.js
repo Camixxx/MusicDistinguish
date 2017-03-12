@@ -9,10 +9,30 @@
  */
 
 // Cache references to DOM elements.
-var elms = ['track', 'timer', 'duration', 'playBtn', 'pauseBtn', 'prevBtn', 'nextBtn', 'refreshBtn', 'volumeBtn', 'progress', 'bar', 'wave', 'loading', 'playlist', 'list', 'volume', 'barEmpty', 'barFull', 'sliderBtn'];
+
+
+var elms = ['track', 'timer', 'duration', 'playBtn', 'pauseBtn', 'humanBtn', 'machineBtn',
+            'refreshBtn', 'volumeBtn', 'progress', 'bar', 'wave', 'loading', 'playlist',
+            'list', 'volume', 'barEmpty', 'barFull', 'sliderBtn'];
+var isAIType = ['raw','gen'];
+var type;
+var title;
+var researchResult;
 elms.forEach(function(elm) {
   window[elm] = document.getElementById(elm);
 });
+window.onload = function() {
+  player.play(GetRandomNum());
+};
+
+function hideBtn(){
+    humanBtn.style.visibility = "hidden";
+    machineBtn.style.visibility = "hidden";
+}
+function resetBtn(){
+    humanBtn.style.visibility = null;
+    machineBtn.style.visibility = null;
+}
 
 /**
  * Player class containing the state of our playlist and where we are in it.
@@ -24,18 +44,18 @@ var Player = function(playlist) {
   this.index = 0;
 
   // Display the title of the first track.
-  track.innerHTML = '1. ' + playlist[0].title;
-
+  //track.innerHTML = '1. ' + playlist[0].title;
   // Setup the playlist display.
-  playlist.forEach(function(song) {
-    var div = document.createElement('div');
-    div.className = 'list-song';
-    div.innerHTML = song.title;
-    div.onclick = function() {
-      player.skipTo(playlist.indexOf(song));
-    };
-    list.appendChild(div);
-  });
+  // playlist.forEach(function(song) {
+  //   var div = document.createElement('div');
+  //   div.className = 'list-song';
+  //   div.innerHTML = song.title;
+  //   div.onclick = function() {
+  //     player.skipTo(playlist.indexOf(song));
+  //   };
+  //   list.appendChild(div);
+  // });
+
 };
 Player.prototype = {
   /**
@@ -48,20 +68,26 @@ Player.prototype = {
 
     index = typeof index === 'number' ? index : self.index;
     var data = self.playlist[index];
-    console.log("=======================TEST:");
-    console.log(index);
-    console.log(data);
+    // console.log("=======================TEST:");
+    // console.log(index);
+    // console.log(data);
 
-    var isAI = GetRandomNum(0,4);
-    //if(isAI % 2 ==)
-
+    //type = isAIType[Math.random()>0.5?1:0];
+    if(index>= rawLen){
+      type = 'gen';
+    }else{
+      type = 'raw';
+    }
+    console.log("Type:"+type+"\nIndex:"+index+"\nTitle:"+data.title);
+    title = data.title;
     // If we already loaded this track, use the current one.
     // Otherwise, setup and load a new Howl.
     if (data.howl) {
       sound = data.howl;
     } else {
       sound = data.howl = new Howl({
-        src: ['./static/audio/' + data.file + '.webm', './static/audio/' + data.file + '.mp3'],
+        //src: ['./static/music/' + data.file + '.webm', './static/audio/' + data.file + '.mp3'],
+        src: [ './static/music/'+ type + '/' + data.file],
         html5: true, // Force to HTML5 so that the audio can stream in (best for large files).
         onplay: function() {
           // Display the duration.
@@ -85,7 +111,8 @@ Player.prototype = {
           // Stop the wave animation.
           wave.container.style.display = 'none';
           bar.style.display = 'block';
-          self.skip('right');
+          alert("结束一曲，请按刷新键");
+          //self.skip('right');
         },
         onpause: function() {
           // Stop the wave animation.
@@ -272,23 +299,28 @@ Player.prototype = {
 };
 
 // Setup our new audio player class and pass it the playlist.
-var player = new Player(  [
-  {
-    title: 'Rave Digger',
-    file: 'rave_digger',
+
+valueDir=JSON.parse(valueDir);
+
+var playData = [];
+var rawLen = valueDir['raw'].length;
+var genLen = valueDir['gen'].length;
+for(var i=0;i< rawLen;i++){
+  playData.push({
+    title: valueDir['raw'][i],
+    file:  valueDir['raw'][i],
     howl: null
-  },
-  {
-    title: '80s Vibe',
-    file: '80s_vibe',
+  })
+
+}
+for(var i=0;i< genLen;i++){
+  playData.push({
+    title: valueDir['gen'][i],
+    file:  valueDir['gen'][i],
     howl: null
-  },
-  {
-    title: 'Running Out',
-    file: 'running_out',
-    howl: null
-  }]
-);
+  })
+}
+var player = new Player( playData);
 
 // Bind our player controls.
 playBtn.addEventListener('click', function() {
@@ -297,11 +329,21 @@ playBtn.addEventListener('click', function() {
 pauseBtn.addEventListener('click', function() {
   player.pause();
 });
-prevBtn.addEventListener('click', function() {
-  player.skip('prev');
+humanBtn.addEventListener('click', function() {
+  //player.skip('prev');
+  console.log("选择了人工作曲："+type + "\n title:"+title);
+  var data = {"name":title,"type":type,"testtype":"raw"};
+  sendPost(data);
+  hideBtn();
+  //player.pause();
 });
-nextBtn.addEventListener('click', function() {
-  player.skip('next');
+machineBtn.addEventListener('click', function() {
+  //  player.skip('next');
+  console.log("选择了机器作曲："+type+"\n title:"+title);
+  var data = {"name":title,"type":type,"testtype":"gen"};
+  sendPost(data);
+  hideBtn();
+  //player.pause();
 });
 waveform.addEventListener('click', function(event) {
   player.seek(event.clientX / window.innerWidth);
@@ -311,14 +353,22 @@ waveform.addEventListener('click', function(event) {
 // });
 refreshBtn.addEventListener('click', function() {
   //player.togglePlaylist();
+  var rand = GetRandomNum();
   console.log("Refresh:"+rand);
-  var rand = GetRandomNum(0,3);
-  player.pause();
-  player.play(rand);
+  try{
+    player.pause();
+  }catch(e){
+    console.log("Error:"+e);
+  }finally{
+    player.play(rand);
+  }
+
+  resetBtn();
+
 });
 
 playlist.addEventListener('click', function() {
-  player.togglePlaylist();
+  //player.togglePlaylist();
 });
 volumeBtn.addEventListener('click', function() {
   player.toggleVolume();
@@ -396,8 +446,22 @@ var resize = function() {
 window.addEventListener('resize', resize);
 resize();
 
-
-function GetRandomNum(Min,Max){
+function sendPost(_data) {
+  $.ajax({
+    type: "post",
+    url: "/distinguish",
+    contentType: "application/json;charset=utf-8",
+    dataType: "json",
+    data: _data,
+    success: function(data){
+        //handle data
+        console.log("Success!");
+    }
+});
+}
+function GetRandomNum(){
+    var Max = rawLen+genLen;
+    var Min = 0;
     var Range = Max - Min;
     var Rand = Math.random();
     return(Min + Math.round(Rand * Range));

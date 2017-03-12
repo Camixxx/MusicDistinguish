@@ -3,12 +3,8 @@ var audio;
 var framePlayer;
 window.onload = function(){
       initAudio();
-
 }
 
-function testAI(isAI) {
-
-}
 function initAudio() {
     // audio = document.getElementById('player');
     // audio.src = "static/music/gen/302.mp3"

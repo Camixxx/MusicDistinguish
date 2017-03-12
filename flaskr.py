@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # all the imports
 import os
-import sqlite3
+import sqlite3,time
 from flask import Flask, request, session, g, redirect, url_for, abort, \
-     render_template, flash
+     render_template, flash, json
 # create our little application :)
 app = Flask(__name__)
 
@@ -68,13 +68,21 @@ def player():
     # cur = db.execute('select title, text from entries order by id desc')
     # entries = cur.fetchall()
 
-    return render_template('player.html')
+    path1 = os.getcwd() +'/static/music/gen'
+    path2 = os.getcwd() +'/static/music/raw'
+    list1 = os.listdir(path1)
+    list2 = os.listdir(path2)
+    variable={"gen":list1,"raw":list2,}
+    print(os.getcwd())
+    return render_template('player.html',variable=variable)
 
 @app.route('/en')
 def show_entries():
     db = get_db()
-    cur = db.execute('select title, text from entries order by id desc')
+    cur = db.execute('select id, name, type, testtype ,times from distinguish order by id desc')
     entries = cur.fetchall()
+    print(entries)
+    # log = db.execute('select name, ')
     return render_template('show_entries.html', entries=entries)
 
 @app.route('/add', methods=['POST'])
@@ -100,6 +108,22 @@ def login():
             flash('You were logged in')
             return redirect(url_for('show_entries'))
     return render_template('login.html', error=error)
+
+@app.route('/distinguish',methods=['POST'])
+def distinguish():
+    error = None
+    db = get_db()
+    data={'times':time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))}
+    #name,times,type,testtype
+    for kv in request.data.split( '&' ):
+        args = kv.split('=')
+        data[args[0]] = args[1]
+
+    db.execute('insert into distinguish (name,times,type,testtype) values (?, ?, ?, ?)',
+                 [data['name'], data['times'], data['type'],data['testtype']])
+    db.commit()
+    flash('New entry was successfully posted')
+    return redirect(url_for('player'))
 
 @app.route('/logout')
 def logout():
