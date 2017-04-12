@@ -1,8 +1,8 @@
 <!doctype html>
-<title>Flaskr</title>
+<title>Music Classification</title>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 <div class="title">
-  <h1>Unknow</h1>
+  <h1>Music Classification</h1>
 </div>
 <div class=page>
 
@@ -11,6 +11,13 @@
   {% endfor %}
   {% block body %}{% endblock %}
 </div>
+<div class="hero-unit">
+    <p>MILab - NLP  <span> - hatikoy@163.com</span> <span>2017</span></p>
+  <!-- <audio id="player" type="audio/mp3"> </audio> -->
+  <!-- <button onclick="testAI(0)"><h2>人类作曲</h2></button>
+  <button onclick="testAI(1)"><h2>机器作曲</h2></button> -->
+</div>
+
 <div class=metanav>
 {% if not session.logged_in %}
   <a href="{{ url_for('login') }}">log in</a>

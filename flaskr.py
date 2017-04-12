@@ -3,7 +3,7 @@
 import os
 import sqlite3,time
 from flask import Flask, request, session, g, redirect, url_for, abort, \
-     render_template, flash, json
+     render_template, flash, json, jsonify
 # create our little application :)
 app = Flask(__name__)
 
@@ -92,7 +92,7 @@ def add_entry():
     g.db.execute('insert into entries (title, text) values (?, ?)',
                  [request.form['title'], request.form['text']])
     g.db.commit()
-    flash('New entry was successfully posted')
+    flash('Your vote was successfully posted!')
     return redirect(url_for('show_entries'))
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -123,7 +123,8 @@ def distinguish():
                  [data['name'], data['times'], data['type'],data['testtype']])
     db.commit()
     flash('New entry was successfully posted')
-    return redirect(url_for('player'))
+    #return redirect(url_for('player'))
+    return jsonify({"success":"success"})
 
 @app.route('/logout')
 def logout():

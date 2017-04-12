@@ -78,7 +78,9 @@ Player.prototype = {
     }else{
       type = 'raw';
     }
-    console.log("Type:"+type+"\nIndex:"+index+"\nTitle:"+data.title);
+
+    // console.log("Type:"+type+"\nIndex:"+index+"\nTitle:"+data.title);
+    console.log("一首新曲子");
     title = data.title;
     // If we already loaded this track, use the current one.
     // Otherwise, setup and load a new Howl.
@@ -111,7 +113,7 @@ Player.prototype = {
           // Stop the wave animation.
           wave.container.style.display = 'none';
           bar.style.display = 'block';
-          alert("结束一曲，请按刷新键");
+          alert("结束一曲，请按左下角刷新");
           //self.skip('right');
         },
         onpause: function() {
@@ -334,7 +336,7 @@ humanBtn.addEventListener('click', function() {
   console.log("选择了人工作曲："+type + "\n title:"+title);
   var data = {"name":title,"type":type,"testtype":"raw"};
   sendPost(data);
-  hideBtn();
+  // hideBtn();
   //player.pause();
 });
 machineBtn.addEventListener('click', function() {
@@ -342,7 +344,7 @@ machineBtn.addEventListener('click', function() {
   console.log("选择了机器作曲："+type+"\n title:"+title);
   var data = {"name":title,"type":type,"testtype":"gen"};
   sendPost(data);
-  hideBtn();
+  // hideBtn();
   //player.pause();
 });
 waveform.addEventListener('click', function(event) {
@@ -453,9 +455,16 @@ function sendPost(_data) {
     contentType: "application/json;charset=utf-8",
     dataType: "json",
     data: _data,
-    success: function(data){
+    error: function(){
+      alert("失败！");
+      console.log("Error message:"+arguments[1]);
+    },
+    success: function(result){
         //handle data
-        console.log("Success!");
+      //  console.log("Success!");
+      //  console.log(result);
+        alert("成功了！感谢您的参与！")
+        hideBtn();
     }
 });
 }
