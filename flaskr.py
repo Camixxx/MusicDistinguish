@@ -4,6 +4,7 @@ import os
 import sqlite3,time
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash, json, jsonify
+
 # create our little application :)
 app = Flask(__name__)
 
@@ -16,7 +17,6 @@ app.config.update(dict(
     USERNAME='admin',
     PASSWORD='0000'
 ))
-
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
 def connect_db():
@@ -131,6 +131,7 @@ def logout():
     session.pop('logged_in', None)
     flash('You were logged out')
     return redirect(url_for('show_entries'))
+
 
 if __name__ == '__main__':
     app.run()
