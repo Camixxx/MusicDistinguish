@@ -7,7 +7,7 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
 
 # create our little application :)
 app = Flask(__name__)
-port = '0.0.0.0'
+port = '/var/www/MusicLab'
 #### Database ###
 # Load default config and override config from an environment variable
 app.config.update(dict(
