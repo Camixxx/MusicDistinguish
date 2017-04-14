@@ -22,11 +22,14 @@
       <button onclick="testAI(1)"><h2>机器作曲</h2></button>       -->
     </p>
     <p>
+      <button class="copyBtn timesBtn" disabled="true"> 已经测试 <span id="checkTrue">0</span>次</button>
+      <button class="copyBtn checkBtn" onclick="testResult()" id="checkBtn"> 查看正确率</button>
+
 <!--    <button class="copyBtn" data-clipboard-target="#foo"> &#128279;点击复制链接</button></p>
 --><br>
 
     <input style="visibility: hidden;" id="foo" value="https://github.com/zenorocha/clipboard.js.git">
-    
+
   <!-- <audio id="player" type="audio/mp3"> </audio> -->
   <!-- <button onclick="testAI(0)"><h2>人类作曲</h2></button>
   <button onclick="testAI(1)"><h2>机器作曲</h2></button> -->

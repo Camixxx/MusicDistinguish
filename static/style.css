@@ -66,13 +66,18 @@ td              { padding: 0 5px}
     display: inline-block;
     font-size: 16px;
     border-radius: 3px;
-    background-color: #555555;
     color: white;
+}
+.timesBtn{
+    background: #999;
+}
+.checkBtn{
     cursor: pointer;
+    background: #4CAF50;
 }
 #copy:hover {
-    background-color: #000; /* Green */
-    color: #fff;
+    background: #eee;
+    color: #000;
 }
 @media screen and (min-width: 960px){
   .hero-unit{

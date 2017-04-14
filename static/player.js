@@ -18,6 +18,8 @@ var isAIType = ['raw','gen'];
 var type;
 var title;
 var researchResult;
+var test_times = 0;
+var true_times = 0;
 elms.forEach(function(elm) {
   window[elm] = document.getElementById(elm);
 });
@@ -335,6 +337,12 @@ humanBtn.addEventListener('click', function() {
   //player.skip('prev');
   console.log("选择了人工作曲："+type + "\n title:"+title);
   var data = {"name":title,"type":type,"testtype":"raw"};
+
+  test_times ++;
+  if(type == "raw"){
+      true_times ++;
+  }
+
   sendPost(data);
   // hideBtn();
   //player.pause();
@@ -343,6 +351,13 @@ machineBtn.addEventListener('click', function() {
   //  player.skip('next');
   console.log("选择了机器作曲："+type+"\n title:"+title);
   var data = {"name":title,"type":type,"testtype":"gen"};
+
+  test_times ++;
+  if(type == "gen"){
+    true_times ++;
+  }
+
+
   sendPost(data);
   // hideBtn();
   //player.pause();
@@ -464,6 +479,7 @@ function sendPost(_data) {
       //  console.log("Success!");
       //  console.log(result);
         alert("成功了！感谢您的参与！")
+        father();
         hideBtn();
     }
 });
@@ -474,4 +490,20 @@ function GetRandomNum(){
     var Range = Max - Min;
     var Rand = Math.random();
     return(Min + Math.round(Rand * Range));
+}
+
+function father(){
+    p = parent.document
+    if(p){
+       console.log("___");
+      //  a = p.getElementById("checkTrue");
+      //  console.log(a);
+      ch = p.getElementById("checkTrue");
+      ch.innerText = test_times;
+      if(test_times>=5 && test_times % 5 ==0){
+          // ch.value = true_times/test_times;
+      }
+
+      ch.value = true_times/test_times;
+    }
 }
