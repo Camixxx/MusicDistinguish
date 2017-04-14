@@ -7,7 +7,7 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
 
 # create our little application :)
 app = Flask(__name__)
-
+port = '0.0.0.0'
 #### Database ###
 # Load default config and override config from an environment variable
 app.config.update(dict(
@@ -70,8 +70,8 @@ def player():
 
     #path1 = os.getcwd() +'/static/music/gen'
     #path2 = os.getcwd() +'/static/music/raw'
-    path1 = '139.219.197.232/' + '/static/music/gen'
-    path2 = '139.219.197.232/'  +'/static/music/raw'
+    path1 = port + '/static/music/gen'
+    path2 = port  +'/static/music/raw'
     list1 = os.listdir(path1)
     list2 = os.listdir(path2)
     variable={"gen":list1,"raw":list2,}
