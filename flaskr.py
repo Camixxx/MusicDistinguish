@@ -68,8 +68,10 @@ def player():
     # cur = db.execute('select title, text from entries order by id desc')
     # entries = cur.fetchall()
 
-    path1 = os.getcwd() +'static/music/gen'
-    path2 = os.getcwd() +'static/music/raw'
+    #path1 = os.getcwd() +'/static/music/gen'
+    #path2 = os.getcwd() +'/static/music/raw'
+    path1 = '139.219.197.232/' + '/static/music/gen'
+    path2 = '139.219.197.232/'  +'/static/music/raw'
     list1 = os.listdir(path1)
     list2 = os.listdir(path2)
     variable={"gen":list1,"raw":list2,}
